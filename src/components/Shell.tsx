@@ -1,6 +1,8 @@
 "use client";
 import { AppBar, Toolbar, Typography, Box, Container, Button } from "@mui/material";
 import Link from "next/link";
+import {AuthButtons} from "@/components/auth/AuthButtons";
+
 
 export default function Shell({ children }: { children: React.ReactNode }) {
     return (
@@ -13,6 +15,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
                     <Button color="inherit" component={Link} href="/quotes">Quotes</Button>
                     <Button color="inherit" component={Link} href="/invoices">Invoices</Button>
                     <Button color="inherit" component={Link} href="/bookings">Bookings</Button>
+                    <AuthButtons />
                 </Toolbar>
             </AppBar>
             <Container sx={{ py: 3 }}>{children}</Container>

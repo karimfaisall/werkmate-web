@@ -1,4 +1,4 @@
-import Shell from "../components/Shell";
+import { redirect } from "next/navigation";
 export default function Home() {
-    return <Shell>Welcome to WerkMate Web.</Shell>;
+    redirect("/login");
 }

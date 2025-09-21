@@ -1,6 +1,6 @@
 "use client";
-import Shell from "../../components/Shell";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { api } from "@/lib/api";
 import { Button, Stack, TextField, List, ListItem, Typography } from "@mui/material";
 
@@ -10,20 +10,31 @@ export default function Page() {
     const [clients, setClients] = useState<Client[]>([]);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const { data: session } = useSession();
+
+    const authed = api.extend({
+        hooks: { beforeRequest: [req => {
+                const t = (session as any)?.accessToken;
+                if (t) req.headers.set("Authorization", `Bearer ${t}`);
+            }] }
+    });
 
     const load = async () => {
-        const data = await api.get("clients").json<Client[]>();
+        const data = await authed.get("clients").json<Client[]>();
         setClients(data);
     };
-    useEffect(() => { load(); }, []);
+    useEffect(() => { load(); /* eslint-disable-line react-hooks/exhaustive-deps */ }, []);
 
     const create = async () => {
-        await api.post("clients", { json: { name, email } });
+        const payload: any = {};
+        if (name.trim()) payload.name = name.trim();
+        if (email.trim()) payload.email = email.trim();
+        await authed.post("clients", { json: payload });
         setName(""); setEmail(""); await load();
     };
 
     return (
-        <Shell>
+        <>
             <Typography variant="h6" sx={{ mb: 2 }}>Clients</Typography>
             <Stack direction="row" gap={2} sx={{ mb: 2 }}>
                 <TextField label="Name" value={name} onChange={e=>setName(e.target.value)} />
@@ -31,6 +42,6 @@ export default function Page() {
                 <Button variant="contained" onClick={create}>Add</Button>
             </Stack>
             <List>{clients.map(c => <ListItem key={c.id}>{c.name} — {c.email}</ListItem>)}</List>
-        </Shell>
+        </>
     );
 }
