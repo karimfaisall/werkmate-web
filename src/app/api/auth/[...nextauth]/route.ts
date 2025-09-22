@@ -19,7 +19,7 @@ const handler = NextAuth({
             (session as any).accessToken = token.accessToken;
             return session;
         },
-       
+
     },
 });
 export { handler as GET, handler as POST };

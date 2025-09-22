@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import { api } from "@/lib/api";
 import { Button, Stack, TextField, List, ListItem, Typography } from "@mui/material";
 
@@ -10,26 +9,18 @@ export default function Page() {
     const [clients, setClients] = useState<Client[]>([]);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
-    const { data: session } = useSession();
-
-    const authed = api.extend({
-        hooks: { beforeRequest: [req => {
-                const t = (session as any)?.accessToken;
-                if (t) req.headers.set("Authorization", `Bearer ${t}`);
-            }] }
-    });
 
     const load = async () => {
-        const data = await authed.get("clients").json<Client[]>();
+        const data = await api.get("clients").json<Client[]>();
         setClients(data);
     };
-    useEffect(() => { load(); /* eslint-disable-line react-hooks/exhaustive-deps */ }, []);
+    useEffect(() => { load(); }, []);
 
     const create = async () => {
         const payload: any = {};
         if (name.trim()) payload.name = name.trim();
         if (email.trim()) payload.email = email.trim();
-        await authed.post("clients", { json: payload });
+        await api.post("clients", { json: payload });
         setName(""); setEmail(""); await load();
     };
 
