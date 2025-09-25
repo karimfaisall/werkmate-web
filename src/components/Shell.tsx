@@ -15,6 +15,8 @@ export default function Shell({ children }: { children: React.ReactNode }) {
                     <Button color="inherit" component={Link} href="/quotes">Quotes</Button>
                     <Button color="inherit" component={Link} href="/invoices">Invoices</Button>
                     <Button color="inherit" component={Link} href="/bookings">Bookings</Button>
+                    <Button color="inherit" component={Link} href="/team">Team</Button>
+
                     <AuthButtons />
                 </Toolbar>
             </AppBar>
